@@ -1,0 +1,18 @@
+crear un proyecto nodeJS	npm init --y
+modulo express			npm install express
+instalar parseador		npm install body-parser
+
+levantar un proyecto nodeJS	node app.js
+
+crear proyecto			npx create-expo-app 'Nombre proyecto' --template blank
+instalar dependencias
+npm install @react-navigation/native react-native-screens react-native-safe-area-context @react-navigation/native-stack
+npm install @rneui/base  @rneui/themed
+
+iniciar protecto		npx expo start --tunnel
+
+npx expo install --check
+
+npx expo install react-native-screens react-native-safe-area-context
+
+npx expo install react-native-safe-area-context@~5.6.0 react-native-screens@~4.16.0
