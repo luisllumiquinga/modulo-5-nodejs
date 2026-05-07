@@ -1,4 +1,4 @@
-const IP="192.168.100.59";
+const IP="192.168.1.101";
 const PORT=3001;
 const URL="http://"+IP+":"+PORT+"/"
 
@@ -31,6 +31,31 @@ export const saveLaptoptRest=(laptop, fnShowMessage)=>{
 
     fetch(
         URL+"laptops",config
+    )
+    .then(response=>response.json())
+    .then(body=>{
+        fnShowMessage();
+        console.log(body);
+    });
+}
+
+export const updateLaptoptRest=(laptop, fnShowMessage)=>{
+    const config={
+        method:"PUT",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+            id:laptop.id,
+            marca:laptop.marca,
+            procesador:laptop.procesador,
+            memoria:laptop.memoria,
+            disco:laptop.disco
+        })
+    }
+
+    fetch(
+        URL+"laptops/"+laptop.id,config
     )
     .then(response=>response.json())
     .then(body=>{

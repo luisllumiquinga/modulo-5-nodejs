@@ -1,23 +1,44 @@
 import { View, Text, StyleSheet, Alert } from "react-native"
 import { Input, Button } from "@rneui/base"
 import { useState } from "react"
-import { saveLaptoptRest } from "../rest_client/laptops"
+import { saveLaptoptRest, updateLaptoptRest } from "../rest_client/laptops"
 
-export const LaptopsForm = ({ navigation }) => {
-    const [marca, setMarca] = useState();
-    const [procesador, setProcesador] = useState();
-    const [memoria, setMemoria] = useState();
-    const [disco, setDisco] = useState();
+export const LaptopsForm = ({ navigation, route }) => {
+    let laptopRetrieved = route.params.laptopParam;
+    let isNew = true;
 
-    const showMessage = () => {
-        Alert.alert("CONFIRMACION", "Laptop ingresada correctamente");
+    if (laptopRetrieved != null) {
+        isNew = false;
     }
 
-    const saveLaptop = () => {
-        console.log("saveLaptop");
+    const [marca, setMarca] = useState(isNew ? null : laptopRetrieved.marca);
+    const [procesador, setProcesador] = useState(isNew ? null : laptopRetrieved.procesador);
+    const [memoria, setMemoria] = useState(isNew ? null : laptopRetrieved.memoria);
+    const [disco, setDisco] = useState(isNew ? null : laptopRetrieved.disco);
+
+    const showMessage = () => {
+        Alert.alert("CONFIRMACION", isNew ? "Laptop ingresada correctamente" : "Laptop actualizada correctamente");
         navigation.goBack();
+    }
+
+    const createLaptop = () => {
+        console.log("saveLaptop");
         saveLaptoptRest(
             {
+                marca: marca,
+                procesador: procesador,
+                memoria: memoria,
+                disco: disco
+            },
+            showMessage
+        );
+    }
+
+    const updateLaptop = () => {
+        console.log("updateLaptop");
+        updateLaptoptRest(
+            {
+                id: laptopRetrieved.id,
                 marca: marca,
                 procesador: procesador,
                 memoria: memoria,
@@ -62,7 +83,7 @@ export const LaptopsForm = ({ navigation }) => {
 
         <Button
             title="GUARDAR"
-            onPress={saveLaptop}
+            onPress={isNew ? createLaptop : updateLaptop}
         />
     </View>
 }

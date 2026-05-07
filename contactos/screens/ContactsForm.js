@@ -1,22 +1,42 @@
 import { View, Text, StyleSheet, Alert } from "react-native"
 import { Input, Button } from "@rneui/base"
 import { useState } from "react"
-import { saveContactRest } from "../rest_client/contactos"
+import { saveContactRest, updateContactRest } from "../rest_client/contactos"
 
-export const ContactsForm = ({navigation}) => {
-    const [name, setName] = useState();
-    const [surname, setSurname] = useState();
-    const [phoneNumber, setPhoneNumber] = useState();
+export const ContactsForm = ({ navigation, route }) => {
+    let contactRetrieved = route.params.contactParam;
+    let isNew = true;
 
-    const showMessage = () => {
-        Alert.alert("CONFIRMACION", "Se creo el contacto");
+    if (contactRetrieved != null) {
+        isNew = false;
     }
 
-    const saveContact = () => {
-        console.log("saveContact");
+    const [name, setName] = useState(isNew ? null : contactRetrieved.nombre);
+    const [surname, setSurname] = useState(isNew ? null : contactRetrieved.apellido);
+    const [phoneNumber, setPhoneNumber] = useState(isNew ? null : contactRetrieved.celular);
+
+    const showMessage = () => {
+        Alert.alert("CONFIRMACION", isNew?"Se creo el contacto":"Contacto actualizado");
         navigation.goBack();
+    }
+
+    const createContact = () => {
+        console.log("saveContact");
         saveContactRest(
             {
+                name: name,
+                surName: surname,
+                phoneNumber: phoneNumber
+            },
+            showMessage
+        );
+    }
+
+    const updateContact = () => {
+        console.log("updateContact");
+        updateContactRest(
+            {
+                id: contactRetrieved.id,
                 name: name,
                 surName: surname,
                 phoneNumber: phoneNumber
@@ -52,7 +72,7 @@ export const ContactsForm = ({navigation}) => {
 
         <Button
             title="GUARDAR"
-            onPress={saveContact}
+            onPress={isNew ? createContact : updateContact}
         />
     </View>
 }
