@@ -3,44 +3,68 @@ const bodyParser = require('body-parser');
 const app = express();
 const puerto = 3001;
 
-//contato: id, nombre, apellido, celular
+const { Client } = require("pg")
+
+const client = new Client({
+    user: "postgres",
+    host: "192.168.1.101",
+    database: "contactos",
+    password: "4189",
+    port: 5432,
+});
+
+client.connect();
 
 app.use(bodyParser.json());
 
 app.use('/contactos', (request, response, next) => {
-    console.log('Ingresa a middleware');
-    console.log('headers', request.headers);
-    console.log('body', request.body);
+    //console.log('Ingresa a middleware');
+    //console.log('headers', request.headers);
+    //console.log('body', request.body);
     next();
 });
 
 app.get("/contactos", (request, response) => {
-    const contactos = [
-        { id: 1, nombre: "Santiago", apellido: 'Mosquera', celular: '0921453322' },
-        { id: 2, nombre: "Joselyne", apellido: 'Morales', celular: '0982393311' },
-        { id: 3, nombre: 'Juan', apellido: 'Perez', celular: '0921453322' }
-    ];
-
-    console.log('ingresa a get')
-
-    response.send(contactos);
+    client.query('SELECT * FROM contactos').then(responseQuery => {
+        console.log(responseQuery.rows);
+        response.send(responseQuery.rows);
+    }).catch(err => {
+        console.log(err);
+        response.status(500).send({ error: 'Error al consultar los contactos' });
+    });
 });
 
 app.post('/contactos', (req, resp) => {
-    req.body.id = 99;
-    resp.send(req.body);
+    const {nombre, apellido, celular} = req.body;
+    client.query(`INSERT INTO contactos (nombre, apellido, celular) VALUES ('${nombre}', '${apellido}', '${celular}')`).then(result => {
+    console.log(result.rows);
+    resp.send(result.rows);
+    }).catch(err => {
+        console.log(err);
+        resp.status(500).send({ error: 'Error al insertar el contacto' });
+    });
 });
 
 app.put('/contactos/:idParam', (req, resp) => {
     const id = req.params.idParam;
-    console.log('id', id);
-    resp.send(req.body);
+    client.query(`UPDATE contactos SET nombre = '${req.body.nombre}', apellido = '${req.body.apellido}', celular = '${req.body.celular}' WHERE id = ${id}`).then(result => {
+        console.log(result.rows);
+        resp.send(result.rows);
+    }).catch(err => {
+        console.log(err);
+        resp.status(500).send({ error: 'Error al actualizar el contacto' });
+    });
 });
 
 app.delete('/contactos/:id', (req, resp) => {
     const id = req.params.id;
-    console.log('id: ', id);
-    resp.send({ id: id });
+    client.query(`DELETE FROM contactos WHERE id = ${id}`).then(result => {
+        console.log(result.rows);
+        resp.send(result.rows);
+    }).catch(err => {
+        console.log(err);
+        resp.status(500).send({ error: 'Error al eliminar el contacto' });
+    });
 });
 
 app.listen(puerto, () => {

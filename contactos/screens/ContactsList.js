@@ -2,13 +2,17 @@ import { View, Text, StyleSheet, FlatList, TouchableHighlight } from "react-nati
 import { Button, ListItem, FAB } from "@rneui/base"
 import { getAllContacts } from "../rest_client/contactos"
 import { useState, useEffect } from "react"
+import { useFocusEffect } from "@react-navigation/native"
+import { useCallback } from "react"
 
 export const ContactsList = ({ navigation }) => {
     const [contactsList, setContactsList] = useState([]);
 
-    useEffect(() => {
-        getAllContacts(fnRefreshList);
-    }, [])
+    useFocusEffect(
+        useCallback(() => {
+            getAllContacts(fnRefreshList);
+        }, [])
+    );
 
     const ContactItem = ({ contact }) => {
         return <TouchableHighlight onPress={()=>{
