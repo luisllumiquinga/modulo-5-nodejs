@@ -68,5 +68,5 @@ app.delete('/contactos/:id', (req, resp) => {
 });
 
 app.listen(puerto, () => {
-    console.log("Servidor listo en el puerto " + 3001)
+    console.log("Servidor listo en el puerto " + puerto);
 });

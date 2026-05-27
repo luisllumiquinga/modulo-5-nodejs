@@ -1,0 +1,15 @@
+VERSION		node --version
+		npm --version
+
+PROYECTO NODE		npm init --y
+EXPRESS			npm install express
+EJECUTAR		node app.js
+PARSEADOR		npm install body-parser
+
+BASE DE DATOS		npm install pg
+
+modificar el archivo pg_haba.conf que se encuentra en la ruta
+C:\Program Files\PostgreSQL\16\data
+En el archivo ver la linea
+	host	all	all	ip propia	md5
+
